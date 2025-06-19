@@ -1,12 +1,21 @@
 'use client'
 
-import ItemGrid from "./components/item/dataTable";
+import { AppBar, Box, Container, Toolbar, Typography } from "@mui/material";
 import VerticalTabs from "./components/ui/tabPage";
+import SearchAppBar from "./components/ui/navigation";
+import CartSummary from "./components/bill/cartSummary";
 
-export default function Both(){
-  console.log("hello you!");
+export default function Home(){
   return(
-    <VerticalTabs />
-    // <ItemGrid items={[]} />
+    <Container >
+      <SearchAppBar />
+      <VerticalTabs />
+      <Box>
+      {/* <IconButtonWithBadge itemCount={3}/> */}
+    </Box>
+    <Box>
+    <CartSummary />
+    </Box>
+    </Container>    
   );
 }

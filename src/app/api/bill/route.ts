@@ -21,13 +21,13 @@ export async function POST(request: Request){
     const body = await request.json();
     const cursor = await client.db(`${db}`).collection(`${collection}`).insertOne(
         {
-            // TODO: add bill details
-            // name:body.itemName, 
-            // type:"type3", 
-            // price:300.00
-
+            date: Date.now(),
+            items: body.items,
+            total: body.total,
+            patientId: 'test'
         });
-    return Response.json({message: "successfully inserted the bill document"})
+    const bill = await cursor
+    return Response.json(bill)
   }
 
   

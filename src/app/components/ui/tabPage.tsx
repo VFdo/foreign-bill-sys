@@ -5,6 +5,9 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { Item } from '@/app/types/item';
+import ItemGrid from '../item/[id]/dataTable';
+import { Container } from '@mui/material';
+import { useCallback, useState } from 'react';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -25,18 +28,11 @@ function TabPanel(props: TabPanelProps) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          <Box>{children}</Box>
         </Box>
       )}
     </div>
   );
-}
-
-function a11yProps(index: number) {
-  return {
-    id: `vertical-tab-${index}`,
-    'aria-controls': `vertical-tabpanel-${index}`,
-  };
 }
 
 export default function VerticalTabs() {
@@ -55,9 +51,16 @@ export default function VerticalTabs() {
               .then((data: Item[]) => setItems(data))
           }, []);
 
+  const uniqueTypes = Array.from(new Set(items.map(item => item.type)));
+
+  const [billList, setBillList] = useState<string[]>([]);
+
+  console.log(billList);
+
   return (
+    // <Container>
     <Box
-      sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: 224 }}
+      sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100%', width:'100%' }}
     >
       <Tabs
         orientation="vertical"
@@ -65,45 +68,46 @@ export default function VerticalTabs() {
         value={value}
         onChange={handleChange}
         // aria-label="Vertical tabs example"
-        sx={{ borderRight: 1, borderColor: 'divider' }}
+        sx={{ borderRight: 1, borderColor: 'divider', minWidth: 200 }}
       >
         
-        {items.map((item) => (
-            <Tab key={item._id} label={item.name}></Tab> //TODO: change to item type.
+        {uniqueTypes.map((type) => (
+            <Tab 
+            // key={item.type} label={item.type}
+            key={type}
+            label={
+              <Box sx={{ whiteSpace: 'normal', textAlign: 'center' }}>
+                {type}
+              </Box>
+            }
+            ></Tab>
         ))}
-
-
-        {/* <Tab label="Item One" {...a11yProps(0)} />
-        <Tab label="Item Two" {...a11yProps(1)} />
-        <Tab label="Item Three" {...a11yProps(2)} />
-        <Tab label="Item Four" {...a11yProps(3)} />
-        <Tab label="Item Five" {...a11yProps(4)} />
-        <Tab label="Item Six" {...a11yProps(5)} />
-        <Tab label="Item Seven" {...a11yProps(6)} /> */}
+        <Tab 
+            label={
+              <Box sx={{ whiteSpace: 'normal', textAlign: 'center' }}>
+                Procedures
+              </Box>
+            }
+            ></Tab>
       </Tabs>
 
 
-      <TabPanel value={value} index={0}>
-        Item One
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        Item Two
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        Item Three
-      </TabPanel>
-      <TabPanel value={value} index={3}>
-        Item Four
-      </TabPanel>
-      <TabPanel value={value} index={4}>
-        Item Five
-      </TabPanel>
-      <TabPanel value={value} index={5}>
-        Item Six
-      </TabPanel>
-      <TabPanel value={value} index={6}>
-        Item Seven
-      </TabPanel>
+      {uniqueTypes.map((type, index) => (
+        <TabPanel key = {type} value={value} index={index} >
+          <Box sx={{width: 900}}>
+            <ItemGrid 
+              items={items.filter(item => item.type === type)} 
+              setBillList={setBillList}
+            />
+            </Box>
+        </TabPanel>
+        ))}
+        <TabPanel value={value} index={uniqueTypes.length} >
+          <Box sx={{width: 900}}>
+          Procedure tab
+          </Box>
+        </TabPanel>
     </Box>
+    // </Container>
   );
 }

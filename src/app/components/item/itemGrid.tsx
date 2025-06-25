@@ -9,19 +9,17 @@ import { useCartStore } from '@/app/store/cartstore';
 
     type GridProps = {
         items: Item[],
-        setBillList: React.Dispatch<React.SetStateAction<string[]>>;
     }
 
-    export default function ItemGrid({items, setBillList} : GridProps) {
-        const addItem = useCartStore((state) => state.addItem);
+    export default function ItemGrid({items} : GridProps) {
+        // const addItem = useCartStore((state) => state.addItem);
 
         const columns: GridColDef<Item>[] = [
-            // TODO: try to hide ID
-            { 
-                field: '_id', 
-                headerName: 'Item ID', 
-                flex: 1 
-            },
+            // { 
+            //     field: '_id', 
+            //     headerName: 'Item ID', 
+            //     flex: 1 
+            // },
             { 
                 field: 'name', 
                 headerName: 'Item Name', 
@@ -43,11 +41,14 @@ import { useCartStore } from '@/app/store/cartstore';
                   const isInCart = cartItems.some((i) => i._id === item._id);
                   const addItem = useCartStore.getState().addItem;
                   const removeItem = useCartStore.getState().removeItem;
+                  const [label, setLabel] = useState(isInCart ? 'Remove' : 'Add to Bill')
                   const handleClick = () => {
                     if (isInCart) {
                       removeItem(item._id);
+                      setLabel('Add to Bill')
                     } else {
                       addItem(item);
+                      setLabel('Remove')
                     }
                   };
               
@@ -57,7 +58,7 @@ import { useCartStore } from '@/app/store/cartstore';
                       color={isInCart ? 'secondary' : 'primary'}
                       onClick={handleClick}
                     >
-                      {isInCart ? 'Remove' : 'Add to Bill'}
+                      {label}
                     </Button>
                   );
                 }
@@ -66,7 +67,7 @@ import { useCartStore } from '@/app/store/cartstore';
 
     
     return (
-        <Box sx={{ height: 400, width: '100%' }}>
+        <Box sx={{ height: '100%', width: '100%' }}>
         <DataGrid
             rows={items}
             getRowId={(row) => row._id}
@@ -79,14 +80,7 @@ import { useCartStore } from '@/app/store/cartstore';
             },
             }}
             pageSizeOptions={[10]}
-            // checkboxSelection
             disableRowSelectionOnClick
-            // onRowSelectionModelChange={(newSelection) => {
-            //     setRowSelectionModel(newSelection);
-            //   }}
-            //   rowSelectionModel={selectedItemList}
-            //   {...items}
-        
         />
       </Box>
     );

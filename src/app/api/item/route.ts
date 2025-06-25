@@ -17,11 +17,12 @@ export async function GET(){
 export async function POST(request: Request){
     const client = await connect;
     const body = await request.json();
+    console.log("test body:", body);
     const cursor = await client.db(`${db}`).collection(`${collection}`).insertOne(
         {
-            name:body.itemName, 
-            type:"type3", 
-            price:300.00
+            name:body.name, 
+            type:body.type, 
+            price:body.price
 
         });
     return Response.json({message: "successfully inserted the document"})

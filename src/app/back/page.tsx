@@ -7,7 +7,7 @@ export default async function Back(){
     if (!process.env.BASE_URL) {
         throw new Error('Invalid/Missing environment variable: "BASE_URL"');
       }
-    const response = await fetch(`${baseURL}/api/items`)
+    const response = await fetch(`${baseURL}/api/item`)
     const items: Item[] = await response.json()
     return(
         <div>

@@ -11,7 +11,7 @@ const EditItem = ({item}: EditProps) => {
     const [itemName, setItemName] = useState("");
 
     const updateItem = () => {
-        fetch(`/api/items/${item._id}`,{
+        fetch(`/api/item/${item._id}`,{
             method: "PUT",
             body: JSON.stringify({ itemName })
         })

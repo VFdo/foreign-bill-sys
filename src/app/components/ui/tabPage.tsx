@@ -5,9 +5,11 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { Item } from '@/app/types/item';
-import ItemGrid from '../item/[id]/dataTable';
+import ItemGrid from '../item/itemGrid';
 import { Container } from '@mui/material';
 import { useCallback, useState } from 'react';
+import BasicModal from './addItemModal';
+import BasicModalAdd from './addItemModal';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -44,21 +46,17 @@ export default function VerticalTabs() {
 
   const [items, setItems] = React.useState<Item[]>([]);
           React.useEffect(() => {
-              fetch('api/items/', {
+              fetch('api/item/', {
                   method:"GET"
               })
               .then(res => res.json())
               .then((data: Item[]) => setItems(data))
           }, []);
 
-  const uniqueTypes = Array.from(new Set(items.map(item => item.type)));
-
-  const [billList, setBillList] = useState<string[]>([]);
-
-  console.log(billList);
+  const uniqueTypes = Array.from(new Set(items.map(item => item.type.toUpperCase())));
 
   return (
-    // <Container>
+    <div>
     <Box
       sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100%', width:'100%' }}
     >
@@ -91,23 +89,24 @@ export default function VerticalTabs() {
             ></Tab>
       </Tabs>
 
-
       {uniqueTypes.map((type, index) => (
         <TabPanel key = {type} value={value} index={index} >
-          <Box sx={{width: 900}}>
+          <Box sx={{width:1100}}>
             <ItemGrid 
-              items={items.filter(item => item.type === type)} 
-              setBillList={setBillList}
+              items={items.filter(item => item.type.toUpperCase() === type.toUpperCase())} 
             />
             </Box>
         </TabPanel>
         ))}
         <TabPanel value={value} index={uniqueTypes.length} >
-          <Box sx={{width: 900}}>
+          <Box sx={{width: 1100}}>
           Procedure tab
           </Box>
         </TabPanel>
     </Box>
-    // </Container>
+    <Box>
+      <BasicModalAdd />
+    </Box>
+    </div>
   );
 }

@@ -1,17 +1,3 @@
-// import { AppBar, Toolbar, Typography } from "@mui/material";
-
-// export default function NavBar() {
-//     return(
-//         <AppBar position="static">
-//             <Toolbar>
-//                 <Typography variant="h6" sx={{ flexGrow: 1 }}>
-//                 Foreign Bill System
-//                 </Typography>
-//             </Toolbar>
-//         </AppBar>
-//     );
-// }
-
 import * as React from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
@@ -20,8 +6,8 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
+import BasicModalBill from './billModal';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -96,6 +82,10 @@ export default function SearchAppBar() {
               inputProps={{ 'aria-label': 'search' }}
             />
           </Search>
+          <Box width={20}></Box>
+          <BasicModalBill />
+          {/* <Box width={20}></Box> */}
+          {/* <AddIconButton /> */}
         </Toolbar>
       </AppBar>
     </Box>

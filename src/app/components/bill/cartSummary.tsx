@@ -38,32 +38,4 @@ export async function createBillFromCart(patientId: string) {
       patientId,
     };
 
-    try{
-        const res = await fetch('/api/bill', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(bill),
-          })
-    
-          if (!res.ok) {
-            throw new Error('Failed to save bill');
-          }
-          console.log('saved bill:', bill)
-          alert('Bill saved successfully');
-        console.log(bill)
-        clearCart();
-    }catch (err) {
-        console.error(err);
-        alert('Error saving bill');
-      }
-    //   .then((data: Item[]) => setItems(data));
-
   }
-
-
-//   const bill = createBillFromCart(patientId);
-//   await fetch('/api/bills', {
-//     method: 'POST',
-//     headers: { 'Content-Type': 'application/json' },
-//     body: JSON.stringify(bill),
-//   });

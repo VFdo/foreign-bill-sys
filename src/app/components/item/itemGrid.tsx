@@ -30,6 +30,11 @@ import { useCartStore } from '@/app/store/cartstore';
                 headerName: 'Price',
                 flex: 1, 
                 editable: true,
+                valueFormatter: (params: any) =>
+                  params.value?.toLocaleString('en-US', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2,
+                  }),
             },
             {
                 field: 'action',

@@ -7,90 +7,87 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from 'next/navigation';
 
 
-export default function BillEditor() {
+type patient = {
+  phn: string
+  name: string
+  phone: string
+  address: string
+  date: Date
+}
+interface ChildProps {
+  setPatient: React.Dispatch<React.SetStateAction<patient>>;
+}
+
+const uri = process.env.NEXT_PUBLIC_PHNURL;
+
+if (!uri) {
+  throw new Error('Missing PHNURL');
+}
+
+export default function BillEditor({setPatient} : ChildProps) {
   const { items, increaseQty, decreaseQty, clearCart, removeItem } = useCartStore();
   const [patientId, setPatientId] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10)); 
+  const [billDate, setDate] = useState(new Date().toISOString().slice(0, 10)); 
 
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const router = useRouter();
 
-  type patient = {
-    phn: string
-    name: string
-    phone: string
-    address: string
-
-  }
-
-    const [patient, setPatient] = useState<patient>({
-        phn: '',
-        name: '',
-        phone: '',
-        address: ''
-    });
-
     const [loading, setLoading] = useState(false)
+    const [showPrintLayout, setShowPrintLayout] = useState(false);
 
-  const handleSave = () => {
-    
+   
+
+
+  const handleSave = async () => {
     const bill = {
       _id: '',
-      date: new Date(date),
+      date: new Date(billDate),
       items,
       total,
       patientId,
     };
-    console.log("bill to save: ", bill);
-
-    Promise.all([
-        fetch('/api/bill'),
-        // fetch(`${baseURL}/getPatientBySN/${sn}`),
-        
-      ])
-      fetch(`http://172.16.0.212:8000/api/adt/patientSearch?phn=${patientId}`)
-    .then(async (res) => {
-        if(res.ok){
-            console.log("found in phn search");
-                const data = await res.json();
-                const phnData = data.data[0];
-                setPatient({
-                    phn: phnData.phn,
-                    name: phnData.patientName,
-                    phone: phnData.patientMobile01,
-                    address: phnData.patientAddress
-                });
-                setLoading(false);
-                console.log("PHN API data:", patient);
-                alert("found");
-                // router.push()
-            }
-        // } if(res2.ok){
-        //     const data2 = await res2.json();
-        //     window.print();
-        //     clearCart();
-        //     console.log("Bill saved:", data2);
-        //     alert("Bill added successfully!");
-        //     router.refresh();
-        // } if(!res1.ok){
-        //     alert("Patient not found!");
-        // }
-        // else {
-        //     alert("Bill cannot be saved!");
-        // }
-      })
-      .catch((err) => {
-        console.error("Save error:", err);
-        alert("Failed to save bill.");
+  
+    try {
+      const res = await fetch(`${uri}${patientId}`);
+      if (!res.ok) throw new Error("Patient not found");
+  
+      const data = await res.json();
+      const phnData = data.data[0];
+      const patientData = {
+        phn: phnData.phn,
+        name: phnData.patientName,
+        phone: phnData.patientMobile01,
+        address: phnData.patientAddress,
+        date: new Date(billDate)
+      };
+      setPatient(patientData);
+  
+      const saveRes = await fetch('/api/bill', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bill),
       });
+  
+      if (!saveRes.ok) throw new Error("Failed to save bill");
+  
+      alert('Bill saved successfully');
+
+      setShowPrintLayout(true);
+      window.print();
+      clearCart();
+      window.location.reload();
+  
+    } catch (err) {
+      console.error("Save error:", err);
+      alert(err || "An error occurred.");
+    }
   };
-
-//   const handlePrint = () => 
-
+  
   return (
+    <>
+    <Box>
     <Box sx={{ maxWidth: 800, mx: 'auto', p: 3 }}>
-      {/* <Typography variant="h4" gutterBottom>New Bill</Typography> */}
 
       <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
         <TextField
@@ -102,7 +99,7 @@ export default function BillEditor() {
         <TextField
           label="Date"
           type="date"
-          value={date}
+          value={billDate}
           onChange={(e) => setDate(e.target.value)}
           fullWidth
         />
@@ -126,7 +123,7 @@ export default function BillEditor() {
             >
               <Box>
                 <Typography>{item.name}</Typography>
-                <Typography variant="body2">Unit Price: ${item.price}</Typography>
+                <Typography variant="body2">Unit Price: Rs.{item.price}</Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Button onClick={() => decreaseQty(item._id)}>-</Button>
@@ -156,5 +153,7 @@ export default function BillEditor() {
         </Box>
       )}
     </Box>
+    </Box>
+      </>
   );
 }

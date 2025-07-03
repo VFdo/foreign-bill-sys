@@ -73,7 +73,7 @@ export default function SearchAppBar() {
           >
             Foreign Bill System
           </Typography>
-          <Search>
+          {/* <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -81,7 +81,7 @@ export default function SearchAppBar() {
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
             />
-          </Search>
+          </Search> */}
           <Box width={20}></Box>
           <BasicModalBill />
           {/* <Box width={20}></Box> */}

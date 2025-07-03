@@ -1,14 +1,15 @@
+'use client'
 import { Item } from "@/app/types/item";
 import { Box, Grid, TextField, Button } from "@mui/material";
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
   function ItemsPage() {
     const [item, setItem] = useState<Item>({
         _id: '',
         name: '',
         type: '',
-        price: 0,
+        price: 0.00,
         quantity: 0
     });
     
@@ -16,9 +17,7 @@ import { useState, useEffect } from "react";
         const { name, value } = e.target;
         setItem({
           ...item,
-          [name]: ["price"].includes(name)
-            ? Number(value)
-              : value,
+          [name]: name === 'price' ? parseFloat(value) : value
         });
       };
 
@@ -60,7 +59,7 @@ import { useState, useEffect } from "react";
                     <TextField label="Type" name="type" value={item.type} onChange={handleInputChange} fullWidth />
                 </Grid>
                 <Grid size={8}>
-                    <TextField label="Unit Price" name="price" value={item.price} onChange={handleInputChange} fullWidth />
+                    <TextField label="Unit Price" name="price" type="number" inputProps={{ step: "0.01", min: "0" }} value={item.price} onChange={handleInputChange} fullWidth />
                 </Grid>
                 <Grid size={8}>
                 <Button 
